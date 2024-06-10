@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Copy } from 'src/typeorm/entties/copy.entity';
+import { Copy } from '../../typeorm/entties/copy.entity';
+import { Book } from '../../typeorm/entties/book.entitty';
 import { Repository } from 'typeorm';
 import { CreateCopyDto } from '../dtos/CreateCopy.dto';
 import { UpdateCopyDto } from '../dtos/UpdateCopy.dto';
@@ -9,26 +10,37 @@ import { UpdateCopyDto } from '../dtos/UpdateCopy.dto';
 export class CopyService {
   constructor(
     @InjectRepository(Copy) private copyRepository: Repository<Copy>,
+    @InjectRepository(Book) private bookRepository: Repository<Book>,
   ) {}
 
-  createCopy(copyPayload: CreateCopyDto) {
-    const newCopy = this.copyRepository.create(copyPayload);
-    return this.copyRepository.save(newCopy);
+  async create(copyPayload: CreateCopyDto) {
+    try {
+      const bookId = copyPayload.book_id;
+      const book = await this.bookRepository.findOne({ where: { id: bookId } });
+      if (!book) {
+        return new NotFoundException("The book doesn't exist.");
+      }
+      const newCopy = this.copyRepository.create(copyPayload);
+      newCopy.book = book;
+      return this.copyRepository.save(newCopy);
+    } catch (error) {
+      return Error('Internal server error');
+    }
   }
 
-  getCopies() {
-    return this.copyRepository.find();
+  get() {
+    return this.copyRepository.find({relations : ['book']});
   }
 
-  updateCopy(id, updateCopyDetails: UpdateCopyDto) {
+  update(id: number, updateCopyDetails: UpdateCopyDto) {
     return this.copyRepository.update({ id }, { ...updateCopyDetails });
   }
 
-  getCopyById(id: number) {
+  getById(id: number) {
     return this.copyRepository.findOneBy({ id });
   }
 
-  deleteCopy(id: number) {
+  delete(id: number) {
     return this.copyRepository.delete({ id });
   }
 }

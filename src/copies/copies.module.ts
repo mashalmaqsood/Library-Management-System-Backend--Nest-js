@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CopiesController } from './controller/copies.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Copy } from 'src/typeorm/entties/copy.entity';
+import { Copy } from '../typeorm/entties/copy.entity';
+import { Book } from '../typeorm/entties/book.entitty';
 import { CopyService } from './service/copies.service';
 
 @Module({
   imports : [TypeOrmModule.forFeature([
-    Copy
+    Copy, Book
    ])],
   controllers: [CopiesController],
-  providers: [CopyService]
+  providers: [CopyService],
 })
 export class CopiesModule {}

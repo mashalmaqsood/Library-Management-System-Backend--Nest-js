@@ -15,7 +15,7 @@ export class Member {
   email: string;
 
   @Column()
-  phone: number;
+  phone: string;
 
   @Column()
   address: string;

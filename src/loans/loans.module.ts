@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-
 import { LoanService } from './service/loans.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Loan } from 'src/typeorm/entties/loan.entity';
 import { loansController } from './controller/loans.controller';
+import { Loan } from '../typeorm/entties/loan.entity';
+import { Member } from '../typeorm/entties/member.entity';
+import { Copy } from '../typeorm/entties/copy.entity';
 
 @Module({
   imports : [TypeOrmModule.forFeature([
-    Loan
+    Loan, Member,Copy
    ])],
   controllers: [loansController],
   providers: [LoanService]

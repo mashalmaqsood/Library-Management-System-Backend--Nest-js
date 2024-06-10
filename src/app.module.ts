@@ -32,7 +32,8 @@ import { databaseConfig } from './config/database';
     CopiesModule,
     LoansModule,
     MembersModule,
-    TransactionsModule],
+    TransactionsModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

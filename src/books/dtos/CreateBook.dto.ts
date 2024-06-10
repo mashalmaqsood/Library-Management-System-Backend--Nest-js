@@ -1,7 +1,6 @@
 import { IsInt, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateBookDto {
-
   @IsNotEmpty()
   @IsString()
   title: string;
@@ -10,13 +9,16 @@ export class CreateBookDto {
   @IsString()
   author: string;
 
+  @IsNotEmpty()
   @IsString()
   ISBN: string;
 
   @IsString()
+  @IsNotEmpty()
   genre: string;
 
   @IsInt()
+  @IsNotEmpty()
   publishedYear: number;
 
   @IsString()

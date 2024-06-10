@@ -6,7 +6,4 @@ export class UpdateCopyDto {
   @IsString()
   status: string;
 
-  @IsInt()
-  @IsOptional()
-  book_id: number;
 }

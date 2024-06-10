@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Book } from 'src/typeorm/entties/book.entitty';
+import {Book} from "../../typeorm/entties/book.entitty"
+// import { Book } from '@src/typeorm/entties/book.entitty';
 import { Repository } from 'typeorm';
 import { CreateBookDto } from '../dtos/CreateBook.dto';
+import { UpdateBookDto } from '../dtos/UpdateBook.dto';
 
 @Injectable()
 export class BookService {
@@ -10,26 +12,31 @@ export class BookService {
     @InjectRepository(Book) private bookRepository: Repository<Book>,
   ) {}
 
-  createBook(bookPayload : CreateBookDto) {
-    console.log(typeof bookPayload.title)
-    console.log('book payloadd', bookPayload);
+  async create(bookPayload : CreateBookDto) {
+    const {title} = bookPayload;
+    const existingBook = await this.bookRepository.findOne({
+      where : {title}
+    })
+    if(existingBook){
+      return { message: 'Book with the same title already exists!' };
+    }
     const newBook = this.bookRepository.create(bookPayload);
     return this.bookRepository.save(newBook);
   }
 
-  async getBooks() {
+  async get() {
     return this.bookRepository.find();
   }
 
-  updateBook(id, updateBookDetails) {
+  update(id : number, updateBookDetails : UpdateBookDto) {
     return this.bookRepository.update({ id }, { ...updateBookDetails });
   }
 
-  getBookById(id: number) {
+  getById(id: number) {
     return this.bookRepository.findOneBy({ id });
   }
 
-  deleteBook(id: number) {
+  delete(id: number) {
     return this.bookRepository.delete({ id });
   }
 }
